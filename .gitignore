@@ -1,0 +1,34 @@
+--- General Node / Yarn ---
+
+/node_modules
+/yarn-error.log
+/yarn.lock
+
+--- Hardhat / Truffle ---
+
+/artifacts
+/cache
+/coverage
+/coverage.json
+
+--- Environment Variables & Security ---
+
+.env
+*.env
+*.private
+*.secret
+
+--- Local Development ---
+
+npm-debug.log*
+.DS_Store
+.nyc_output
+
+--- Frontend (Client) ---
+
+Assuming the client folder has its own git repo,
+
+but ignoring its build output just in case it's nested
+
+/client/build
+/client/node_modules
