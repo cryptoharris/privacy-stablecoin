@@ -97,21 +97,6 @@
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "InvalidOrRedeemedNote",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidRecipientAddress",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "NoteAlreadyExists",
-    "type": "error"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -142,11 +127,6 @@
       }
     ],
     "name": "SafeERC20FailedOperation",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ZeroAmount",
     "type": "error"
   },
   {

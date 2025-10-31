@@ -3,3 +3,4 @@
 /* eslint-disable */
 export { MyStablecoin__factory } from "./MyStablecoin__factory";
 export { PrivacyPool__factory } from "./PrivacyPool__factory";
+export { TSSToken__factory } from "./TSSToken__factory";

@@ -30,3 +30,5 @@ export type { MyStablecoin } from "./contracts/MyStablecoin";
 export { MyStablecoin__factory } from "./factories/contracts/MyStablecoin__factory";
 export type { PrivacyPool } from "./contracts/PrivacyPool";
 export { PrivacyPool__factory } from "./factories/contracts/PrivacyPool__factory";
+export type { TSSToken } from "./contracts/TSSToken";
+export { TSSToken__factory } from "./factories/contracts/TSSToken__factory";

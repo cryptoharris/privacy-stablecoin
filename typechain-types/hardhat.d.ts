@@ -60,6 +60,10 @@ declare module "hardhat/types/runtime" {
       name: "PrivacyPool",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PrivacyPool__factory>;
+    getContractFactory(
+      name: "TSSToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TSSToken__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -121,6 +125,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PrivacyPool>;
+    getContractAt(
+      name: "TSSToken",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TSSToken>;
 
     // default types
     getContractFactory(

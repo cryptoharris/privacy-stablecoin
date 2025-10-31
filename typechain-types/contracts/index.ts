@@ -3,3 +3,4 @@
 /* eslint-disable */
 export type { MyStablecoin } from "./MyStablecoin";
 export type { PrivacyPool } from "./PrivacyPool";
+export type { TSSToken } from "./TSSToken";
