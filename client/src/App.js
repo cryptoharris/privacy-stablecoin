@@ -1662,11 +1662,11 @@ const MainApp = ({
     // Use window.ethers
     if (window.ethers.utils.isHexString(secret) && secret.length === 34) {
       try {
-        return window.ethers.utils.solidityPackedKeccak256(["bytes16"], [secret]);
+        return window.ethers.utils.solidityKeccak256(["bytes16"], [secret]);
       } catch (e) { console.error("Error hashing bytes16:", e); return null; }
     } else {
       console.warn("Secret not bytes16 hex, hashing as string.");
-      return window.ethers.utils.solidityPackedKeccak256(["string"], [secret]);
+      return window.ethers.utils.solidityKeccak256(["string"], [secret]);
     }
   };
 
