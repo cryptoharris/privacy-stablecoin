@@ -1,5 +1,7 @@
 /* global BigInt */
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+// 👇 ADD THIS LINE
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 // CSS is no longer imported, it is inlined below
 
 // --- INLINED ABIs ---
@@ -2109,12 +2111,215 @@ const LandingPage = ({ handleConnect, isEthersReady, onAddNetwork }) => (
         <TssLogo />
         The Secret Service (TSS) Protocol
       </div>
+
+      {/* --- NEW LINKS ADDED HERE --- */}
+      <div className="footer-links" style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
+        <Link to="/privacy" style={{ color: 'var(--text-tertiary)', textDecoration: 'none', fontSize: '0.9rem' }}>
+          Privacy Policy
+        </Link>
+        <Link to="/terms" style={{ color: 'var(--text-tertiary)', textDecoration: 'none', fontSize: '0.9rem' }}>
+          Terms of Service
+        </Link>
+      </div>
+      {/* --- END OF NEW LINKS --- */}
+
       <p>© 2025 The Secret Service Protocol. This is a public demo project for demonstration purposes only.</p>
     </footer>
 
   </div> 
 );
 
+// ... (This is after the end of your LandingPage component)
+
+// --- NEW PRIVACY POLICY PAGE ---
+const PrivacyPolicy = () => {
+  // Basic styling to make it readable
+  const styles = {
+    container: {
+      padding: '40px 20px',
+      maxWidth: '800px',
+      margin: '4rem auto 0 auto', // Add margin-top to clear the header
+      lineHeight: '1.6',
+      textAlign: 'left',
+      color: 'var(--text-primary)', // Use theme color
+    },
+    heading: {
+      marginBottom: '20px',
+    },
+    subheading: {
+      marginTop: '30px',
+      marginBottom: '10px',
+    },
+  };
+
+  return (
+    <div style={styles.container}>
+      <h1 style={styles.heading}>Privacy Policy</h1>
+      <p><strong>Last Updated:</strong> November 11, 2025</p>
+
+      <h2 style={styles.subheading}>1. Introduction</h2>
+      <p>
+        Welcome to The Secret Service ("TSS", "we", "us", "our"). Our service,
+        thesecretservice.io, is a platform for private transactions.
+      </p>
+      <p>
+        This service is owned and operated by{' '}
+        <strong>Global Region Research Consultants FZC</strong>.
+      </p>
+      <p>
+        This Privacy Policy explains how we collect, use, and disclose
+        information about you when you access our website and use our services.
+      </p>
+
+      <h2 style={styles.subheading}>2. Information We Collect</h2>
+      <p>
+        We are committed to privacy. Our service is designed to minimize the
+        collection of personal data.
+      </p>
+      <ul>
+        <li>
+          <strong>Blockchain Data:</strong> Our service operates on public
+          blockchains (like Arbitrum Sepolia). We do not collect or store your
+          private keys. Any transactions you make are public and permanently
+          recorded on the blockchain. This public data includes your wallet
+          address and transaction history.
+        </li>
+        <li>
+          <strong>Non-Personal Data:</strong> When you visit our website, we (or
+          our third-party service providers like Vercel) may collect
+          industry-standard log data, such as your IP address (anonymized where
+          possible), browser type, operating system, and pages visited. This is
+          used for analytics and to improve our service.
+        </li>
+      </ul>
+
+      <h2 style={styles.subheading}>3. How We Use Information</h2>
+      <p>We use the limited information we collect to:</p>
+      <ul>
+        <li>Provide, maintain, and improve our services.</li>
+        <li>Monitor website analytics and usage.</li>
+        <li>Protect the security and integrity of our platform.</li>
+      </ul>
+
+      <h2 style={styles.subheading}>4. Contact Us</h2>
+      <p>
+        If you have any questions about this Privacy Policy, please contact us
+        at thesecretservicetoken@gmail.com.
+      </p>
+    </div>
+  );
+};
+
+// --- NEW TERMS OF SERVICE PAGE (CORRECTED) ---
+const TermsOfService = () => {
+  // Basic styling
+  const styles = {
+    container: {
+      padding: '40px 20px',
+      maxWidth: '800px',
+      margin: '4rem auto 0 auto', // Add margin-top
+      lineHeight: '1.6',
+      textAlign: 'left',
+      color: 'var(--text-primary)', // Use theme color
+    },
+    heading: {
+      marginBottom: '20px',
+    },
+    subheading: {
+      marginTop: '30px',
+      marginBottom: '10px',
+    },
+    warning: {
+      border: '2px solid #FF0000',
+      padding: '15px',
+      borderRadius: '5px',
+      backgroundColor: 'rgba(255, 0, 0, 0.1)',
+    },
+    backLink: {
+      color: 'var(--accent)',
+      textDecoration: 'none',
+      fontSize: '1rem',
+      fontWeight: '500',
+      display: 'block',
+      marginBottom: '2rem',
+    }
+  };
+
+  return (
+    <div style={styles.container}>
+      {/* --- THIS IS THE NEW LINK --- */}
+      <Link to="/" style={styles.backLink}>
+        &larr; Back to Home
+      </Link>
+
+      <h1 style={styles.heading}>Terms of Service</h1>
+      <p><strong>Last Updated:</strong> November 11, 2025</p>
+
+      <h2 style={styles.subheading}>1. Agreement to Terms</h2>
+      <p>
+        These Terms of Service ("Terms") govern your access to and use of the
+        The Secret Service ("TSS", "we", "us", "our") website
+        (thesecretservice.io) and its related services. This service is owned
+        and operated by{' '}
+        <strong>Global Region Research Consultants FZC</strong>.
+      </p>
+      <p>
+        By accessing or using our service, you agree to be bound by these
+        Terms.
+      </p>
+
+      <div style={styles.warning}>
+        <h2 style={styles.subheading}>
+          2. ⚠️ IMPORTANT: TESTNET AND EXPERIMENTAL SERVICE
+        </h2>
+        <p>
+          You acknowledge and agree to the following:
+        </p>
+        <ul>
+          <li>
+            <strong>FOR TESTING ONLY:</strong> The TSS service is currently
+            operating on the <strong>Arbitrum Sepolia TESTNET</strong>.
+          </li>
+          <li>
+            <strong>NO MONETARY VALUE:</strong> Any cryptocurrency tokens
+            used with this service (such as Sepolia ETH or test USDC) are
+            <strong>TESTNET TOKEN'S</strong>. They have{' '}
+            <strong>NO MONETARY VALUE</strong> and cannot be sold,
+            transferred for value, or redeemed for any real-world currency.
+          </li>
+          <li>
+            <strong>EXPERIMENTAL SOFTWARE:</strong> The protocol is
+            experimental and provided for testing purposes only. You use this
+            service at your own risk.
+          </li>
+        </ul>
+      </div>
+
+      <h2 style={styles.subheading}>3. Service Provided "As-Is"</h2>
+      <p>
+        The TSS service is provided on an "AS IS" and "AS AVAILABLE" basis,
+        without warranties of any kind. We do not guarantee that the service
+        will be secure, uninterrupted, or error-free.
+      </p> {/* <--- THIS WAS THE LINE WITH THE </f> TYPO. IT'S NOW FIXED. */}
+
+      <h2 style={styles.subheading}>4. Limitation of Liability</h2>
+      <p>
+        To the fullest extent permitted by law, Global Region Research
+        Consultants FZC shall not be liable for any damages, including loss of
+        funds, loss of profits, or data loss, arising from your use of (or
+        inability to use) the service.
+      </p>
+
+      <h2 style={styles.subheading}>5. Contact Us</h2>
+      <p>
+        If you have any questions about these Terms, please contact us at
+        thesecretservicetoken@gmail.com.
+      </p>
+    </div>
+  );
+};
+
+      
 // --- MAIN APP COMPONENT (CONTROLLER) ---
 function App() {
   const [walletAddress, setWalletAddress] = useState("");
@@ -2350,30 +2555,44 @@ function App() {
 
   // --- RENDER ---
   return (
-    <div className="App">
-      <InjectedStyles />
-      {!walletAddress ? (
-        <LandingPage 
-          handleConnect={handleConnect} 
-          isEthersReady={isEthersReady}
-          onAddNetwork={handleAddNetwork} // --- ADD THIS PROP ---
-        />
-      ) : (
-        <MainApp
-          walletAddress={walletAddress}
-          isTssOwner={isTssOwner}
-          balances={balances}
-          selectedTokenSymbol={selectedTokenSymbol}
-          setSelectedTokenSymbol={setSelectedTokenSymbol}
-          handleRefresh={handleRefresh}
-          handleDisconnect={handleDisconnect}
-          tssContract={tssContract}
-          privacyPoolContract={privacyPoolContract}
-          provider={provider}
-          onAddNetwork={handleAddNetwork} // Pass the new handler
-        />
-      )}
-    </div>
+    <BrowserRouter> {/* 1. Wrap everything in BrowserRouter */}
+      <div className="App">
+        <InjectedStyles />
+        
+        <Routes> {/* 2. Define your routes */}
+          
+          {/* This is your MAIN route ("/") */}
+          <Route path="/" element={
+            !walletAddress ? (
+              <LandingPage 
+                handleConnect={handleConnect} 
+                isEthersReady={isEthersReady}
+                onAddNetwork={handleAddNetwork}
+              />
+            ) : (
+              <MainApp
+                walletAddress={walletAddress}
+                isTssOwner={isTssOwner}
+                balances={balances}
+                selectedTokenSymbol={selectedTokenSymbol}
+                setSelectedTokenSymbol={setSelectedTokenSymbol}
+                handleRefresh={handleRefresh}
+                handleDisconnect={handleDisconnect}
+                tssContract={tssContract}
+                privacyPoolContract={privacyPoolContract}
+                provider={provider}
+                onAddNetwork={handleAddNetwork}
+              />
+            )
+          } />
+
+          {/* 3. Add your new page routes */}
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
