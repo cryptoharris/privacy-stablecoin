@@ -1,8 +1,8 @@
 /* global BigInt */
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, EyeOff, Wallet, ArrowRight, Play, Lock, Unlock, Copy, Activity, Database, Globe, ChevronDown, Layers, Droplet, Wifi, Coins, Fingerprint, Scale } from 'lucide-react';
+import { Shield, EyeOff, Wallet, ArrowRight, Play, Lock, Unlock, Copy, Activity, Database, Globe, ChevronDown, Layers, Droplet, Wifi, Coins, Fingerprint, Scale, Twitter, Send, Book, FileText, AlertTriangle, Check } from 'lucide-react';
 import { ethers } from 'ethers';
 
 // --- 1. ABIs ---
@@ -87,7 +87,7 @@ const InjectedStyles = () => (
       justify-content: space-between; 
       align-items: center; 
       padding: 0 2rem; 
-      background: rgba(2, 2, 2, 0.8); 
+      background: rgba(2, 2, 2, 0.9); 
       backdrop-filter: blur(10px); 
       position: absolute; 
       top: 0; 
@@ -170,7 +170,7 @@ const InjectedStyles = () => (
       display: flex; 
       justify-content: center; 
       gap: 2rem; 
-      padding: 3rem 2rem;
+      padding: 4rem 2rem;
       background: var(--bg-darkest); 
       width: 100%;
       position: relative; 
@@ -181,17 +181,21 @@ const InjectedStyles = () => (
     .stat-item { 
       text-align: center; 
       background: rgba(255, 255, 255, 0.03);
-      border: 1px solid #222;
-      padding: 1.5rem 2rem;
-      min-width: 220px;
+      border: 1px solid #333;
+      padding: 2rem;
+      min-width: 240px;
       backdrop-filter: blur(5px);
-      transition: border-color 0.3s ease;
+      transition: all 0.3s ease;
     }
     
-    .stat-item:hover { border-color: var(--brand-green); }
+    .stat-item:hover { 
+        border-color: var(--brand-green); 
+        transform: translateY(-5px);
+        background: rgba(39, 192, 122, 0.05);
+    }
 
-    .stat-val { font-family: var(--font-display); font-size: 2rem; color: white; }
-    .stat-label { font-family: var(--font-mono); font-size: 0.8rem; color: var(--brand-green); text-transform: uppercase; margin-top: 0.5rem; }
+    .stat-val { font-family: var(--font-display); font-size: 2.5rem; color: white; font-weight: 700; }
+    .stat-label { font-family: var(--font-mono); font-size: 0.9rem; color: var(--brand-green); text-transform: uppercase; margin-top: 0.8rem; letter-spacing: 1px; }
 
     /* --- INFINITE MARQUEE --- */
     .marquee-wrapper {
@@ -234,7 +238,7 @@ const InjectedStyles = () => (
       top: 52px; 
       left: 16%;
       right: 16%;
-      height: 150px;
+      height: 140px; 
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -298,7 +302,6 @@ const InjectedStyles = () => (
     /* General UI Components */
     .glitch-text { font-size: 4rem; font-weight: 900; text-transform: uppercase; margin-bottom: 1rem; color: white; }
     
-    /* --- NEON BUTTONS (FIXED) --- */
     .btn-neon { 
       background: transparent; 
       border: 1px solid var(--brand-green); 
@@ -309,8 +312,8 @@ const InjectedStyles = () => (
       font-weight: bold; 
       cursor: pointer; 
       transition: all 0.3s ease; 
-      text-decoration: none; /* For Links */
-      display: inline-flex; /* For Links */
+      text-decoration: none; 
+      display: inline-flex; 
       align-items: center;
       justify-content: center;
     }
@@ -336,7 +339,7 @@ const InjectedStyles = () => (
     .btn-ghost:hover {
       background: var(--brand-green);
       border-color: var(--brand-green);
-      color: black; /* Text turns black on hover */
+      color: black;
       box-shadow: 0 0 20px rgba(39, 192, 122, 0.4);
     }
 
@@ -375,19 +378,60 @@ const InjectedStyles = () => (
     
     .status-log-container { margin-top: auto; padding-top: 20px; border-top: 1px solid #222; width: 100%; }
 
-    /* Mobile Fixes */
-    @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
+    /* LEGAL PAGES & FOOTER STYLES */
+    .legal-container {
+      max-width: 800px;
+      margin: 8rem auto 4rem; /* Add space for navbar */
+      padding: 2rem;
+      background: var(--bg-dark);
+      border: 1px solid #222;
+      position: relative;
+      z-index: 20;
+      height: auto; /* FIX: Allow content to expand */
+      overflow-y: visible; /* FIX: Ensure scroll works */
+    }
+    .legal-container h1 { font-family: var(--font-display); margin-bottom: 2rem; color: var(--brand-green); font-size: 2.5rem; }
+    .legal-container h2 { font-family: var(--font-mono); color: white; margin-top: 2rem; font-size: 1.2rem; border-bottom: 1px solid #222; padding-bottom: 0.5rem; }
+    .legal-container p { color: #999; line-height: 1.6; margin-bottom: 1rem; font-family: var(--font-body); }
+    .legal-container code { background: #111; padding: 2px 6px; color: var(--neon-blue); font-family: var(--font-mono); font-size: 0.8rem; }
+
+    .new-footer {
+      background: #020202;
+      border-top: 1px solid #222;
+      padding: 4rem 2rem;
+      position: relative;
+      z-index: 20;
+    }
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 3rem;
+    }
+    .footer-col h4 { color: white; font-family: var(--font-display); margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 1px; }
+    .footer-link { display: block; color: #666; margin-bottom: 0.8rem; text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; transition: 0.3s; cursor: pointer; }
+    .footer-link:hover { color: var(--brand-green); }
+    
+    .social-links { display: flex; gap: 1rem; }
+    .social-icon { color: #666; transition: 0.3s; cursor: pointer; }
+    .social-icon:hover { color: var(--brand-green); transform: translateY(-3px); }
+
+    .privacy-notice {
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: rgba(5, 5, 5, 0.95);
+      border-top: 1px solid var(--brand-green);
+      padding: 1.5rem;
+      z-index: 100000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+
     @media (max-width: 768px) { 
-        .glitch-text { font-size: 2.5rem; } 
-        .features-section { grid-template-columns: 1fr; } 
-        .steps-grid { grid-template-columns: 1fr; gap: 2rem; }
-        .sidebar { display: none; } 
-        .main-view { margin-left: 0; } 
-        .roadmap-container { border-left: 0; padding-left: 0; } 
-        .roadmap-dot { display: none; }
-        .connector-track { display: none; } /* Hide dashed lines on mobile */
-        .top-bar { padding: 0 1rem; }
-        .landing-navbar { padding: 0.8rem 1rem; }
+        .footer-content { grid-template-columns: 1fr; gap: 2rem; }
+        .privacy-notice { flex-direction: column; gap: 1rem; text-align: center; }
     }
   `}</style>
 );
@@ -402,7 +446,8 @@ const TssLogo = ({ width = 28, height = 28 }) => (
   </svg>
 );
 
-// --- 5. LANDING PAGE COMPONENTS ---
+// --- COMPONENT DEFINITIONS ---
+
 const StatsBar = () => (
   <div className="stats-bar">
     <div className="stat-item">
@@ -435,27 +480,146 @@ const InfiniteMarquee = () => {
   );
 };
 
-// --- 6. LANDING PAGE ---
+const PublicHeader = ({ handleConnect }) => (
+  <header className="landing-navbar">
+    <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'white' }}>
+      <TssLogo width={32} height={32} />
+      <span className="font-display text-xl tracking-wider text-white">THE SECRET SERVICE</span>
+    </Link>
+    <div style={{display: 'flex', gap: '1rem'}}>
+      <a href="https://docs.thesecretservice.io" target="_blank" rel="noopener noreferrer" className="btn-ghost">
+        DOCS
+      </a>
+      <button onClick={handleConnect} className="btn-neon" style={{ width: 'auto', fontSize: '0.8rem', padding: '0.5rem 1.2rem', marginTop: 0 }}>
+        ENTER TERMINAL
+      </button>
+    </div>
+  </header>
+);
+
+const Footer = () => (
+  <footer className="new-footer">
+    <div className="footer-content">
+      <div className="footer-col">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+          <TssLogo width={24} height={24} />
+          <span className="font-display text-lg text-white">THE SECRET SERVICE</span>
+        </div>
+        <p className="font-mono text-xs text-dim" style={{ maxWidth: '300px', lineHeight: '1.5' }}>
+          The first compliant Zero-Knowledge privacy protocol. Built for the future of digital finance.
+          <br/><br/>
+          © 2025 The Secret Service.
+        </p>
+      </div>
+
+      <div className="footer-col">
+        <h4>COMMS LINK</h4>
+        <div className="social-links">
+          <a href="https://x.com/secretserviceio" target="_blank" rel="noopener noreferrer" className="social-icon">
+            <Twitter size={20} />
+          </a>
+          <a href="https://t.me/thesecretservicetoken" target="_blank" rel="noopener noreferrer" className="social-icon">
+            <Send size={20} />
+          </a>
+          <a href="https://docs.thesecretservice.io" target="_blank" rel="noopener noreferrer" className="social-icon">
+            <Book size={20} />
+          </a>
+        </div>
+      </div>
+
+      <div className="footer-col">
+        <h4>LEGAL</h4>
+        <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+        <Link to="/terms" className="footer-link">Terms of Service</Link>
+        <div className="footer-link" style={{ cursor: 'default', opacity: 0.5 }}>Audits (Pending)</div>
+      </div>
+    </div>
+  </footer>
+);
+
+const PrivacyNotice = () => {
+  const [acknowledged, setAcknowledged] = useState(false);
+  useEffect(() => {
+    const hasAck = localStorage.getItem('tss_privacy_ack');
+    if (hasAck) setAcknowledged(true);
+  }, []);
+  const handleAck = () => {
+    localStorage.setItem('tss_privacy_ack', 'true');
+    setAcknowledged(true);
+  };
+  if (acknowledged) return null;
+  return (
+    <div className="privacy-notice">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <Shield className="text-green-500" size={32} style={{color: 'var(--brand-green)'}} />
+        <div>
+          <h4 className="font-display text-white text-sm mb-1">PRIVACY NOTICE</h4>
+          <p className="font-mono text-gray-400 text-xs max-w-2xl">
+            This terminal runs entirely client-side. We do not use cookies for tracking or analytics. 
+            Local storage is used strictly for app functionality. By entering, you agree to our Terms.
+          </p>
+        </div>
+      </div>
+      <button onClick={handleAck} className="btn-neon" style={{ padding: '0.5rem 1.5rem', fontSize: '0.8rem', width: 'auto', marginTop: 0 }}>
+        ACKNOWLEDGE
+      </button>
+    </div>
+  );
+};
+
+const PrivacyPolicy = () => (
+  <div className="landing-container" style={{ height: 'auto', minHeight: '100vh' }}>
+    <PublicHeader handleConnect={() => window.location.href='/'} />
+    <div className="legal-container">
+      <h1>Privacy Policy</h1>
+      <p>Effective Date: 2025-11-30</p>
+
+      <h2>1. No Data Collection</h2>
+      <p>The Secret Service ("TSS") is a decentralized protocol. We do not collect, store, or process personal data such as names, email addresses, or IP addresses on our servers. We have no backend database.</p>
+
+      <h2>2. On-Chain Transparency</h2>
+      <p>While TSS creates privacy for your transactions, please be aware that the underlying blockchain (Arbitrum/Solana) is a public ledger. Interactions with the smart contract are public, although the link between depositor and withdrawer is cryptographically broken.</p>
+
+      <h2>3. Local Storage</h2>
+      <p>The TSS Terminal uses your browser's <code>localStorage</code> solely to improve user experience (e.g., remembering your last selected token or acknowledgment of this policy). This data never leaves your device.</p>
+
+      <h2>4. Third-Party Infrastructure</h2>
+      <p>When you connect your wallet, you are interacting with third-party RPC providers (like Infura, Alchemy, or Helius). These providers may see your IP address and wallet requests. We recommend using a VPN for maximum privacy.</p>
+    </div>
+    <Footer />
+  </div>
+);
+
+const TermsOfService = () => (
+  <div className="landing-container" style={{ height: 'auto', minHeight: '100vh' }}>
+    <PublicHeader handleConnect={() => window.location.href='/'} />
+    <div className="legal-container">
+      <h1>Terms of Service</h1>
+      <p>Last Updated: 2025-11-30</p>
+
+      <h2>1. Experimental Software</h2>
+      <p>The Secret Service Protocol is experimental software running on Testnet and Mainnet environments. Use it at your own risk. The developers assume no responsibility for funds lost due to smart contract bugs, user error (e.g., losing your Secret Note), or network failures.</p>
+
+      <h2>2. Compliance & Prohibited Use</h2>
+      <p>You agree not to use TSS for money laundering, terrorist financing, or sanctioned activities. The protocol implements a Zero-Knowledge Compliance layer to prevent illicit funds from entering the pool. Attempting to bypass these checks is a violation of these terms.</p>
+
+      <h2>3. No Warranty</h2>
+      <p>The software is provided "AS IS", without warranty of any kind, express or implied. We do not guarantee uptime, specific privacy levels, or profitability.</p>
+
+      <h2>4. Jurisdiction</h2>
+      <p>By accessing this interface, you confirm that you are not a citizen or resident of a jurisdiction where decentralized privacy protocols are prohibited by law.</p>
+    </div>
+    <Footer />
+  </div>
+);
+
+// --- 6. LANDING PAGE COMPONENT ---
 const LandingPage = ({ handleConnect, isEthersReady }) => {
   return (
     <div className="landing-container">
-      {/* Navbar */}
-      <header className="landing-navbar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <TssLogo width={32} height={32} />
-          <span className="font-display text-xl tracking-wider text-white">TSS PROTOCOL</span>
-        </div>
-        <div style={{display: 'flex', gap: '1rem'}}>
-          <a href="https://docs.thesecretservice.io/" target="_blank" rel="noopener noreferrer" className="btn-ghost">
-            DOCS
-          </a>
-          <button onClick={handleConnect} className="btn-neon" style={{ width: 'auto', fontSize: '0.8rem', padding: '0.5rem 1.2rem', marginTop: 0 }}>
-            ENTER TERMINAL
-          </button>
-        </div>
-      </header>
+      <PublicHeader handleConnect={handleConnect} />
 
-      {/* Video */}
+      {/* Video Background */}
       <div className="video-bg-wrapper">
         <video autoPlay loop muted playsInline>
           <source src="/videos/tss_hero_loop.mp4" type="video/mp4" />
@@ -609,15 +773,8 @@ const LandingPage = ({ handleConnect, isEthersReady }) => {
           ))}
         </div>
       </section>
-
-      <footer style={{ padding: '3rem', textAlign: 'center', background: 'black', borderTop: '1px solid #222', zIndex: 10 }}>
-        <p className="font-mono text-xs text-dim">© 2025 THE SECRET SERVICE PROTOCOL // ENCRYPTED</p>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '1rem', opacity: 0.5 }}>
-          <a href="https://x.com/secretserviceio" target="_blank" rel="noopener noreferrer" style={{ cursor: 'pointer', color: 'inherit', textDecoration: 'none' }}>Twitter</a>
-          <span style={{ cursor: 'not-allowed', color: '#666' }}>Discord (Coming Soon)</span>
-          <a href="https://docs.thesecretservice.io/" target="_blank" rel="noopener noreferrer" style={{ cursor: 'pointer', color: 'inherit', textDecoration: 'none' }}>Docs</a>
-        </div>
-      </footer>
+      
+      <Footer />
     </div>
   );
 };
@@ -859,7 +1016,7 @@ const MainApp = ({
   );
 };
 
-// --- 7. APP ROOT ---
+// --- 8. APP ROOT ---
 function App() {
   const [walletAddress, setWalletAddress] = useState("");
   const [isEthersReady, setIsEthersReady] = useState(false);
@@ -952,6 +1109,10 @@ function App() {
   return (
     <BrowserRouter>
       <InjectedStyles />
+      <AnimatePresence>
+        <PrivacyNotice />
+      </AnimatePresence>
+      
       <Routes>
         <Route path="/" element={
           !walletAddress ? (
@@ -973,8 +1134,8 @@ function App() {
             />
           )
         } />
-        <Route path="/privacy" element={<div className="p-10 text-white">Privacy Policy Placeholder</div>} />
-        <Route path="/terms" element={<div className="p-10 text-white">Terms Placeholder</div>} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
       </Routes>
     </BrowserRouter>
   );
