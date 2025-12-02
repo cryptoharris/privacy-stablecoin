@@ -2,7 +2,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, EyeOff, Wallet, ArrowRight, Play, Lock, Unlock, Copy, Activity, Database, Globe, ChevronDown, Layers, Droplet, Wifi, Coins, Fingerprint, Scale, Twitter, Send, Book, FileText, AlertTriangle, Check } from 'lucide-react';
+import { 
+  Shield, EyeOff, Wallet, ArrowRight, Play, Lock, Unlock, Copy, 
+  Activity, Database, Globe, ChevronDown, Layers, Droplet, Wifi, 
+  Coins, Fingerprint, Scale, Twitter, Send, Book, FileText, AlertTriangle, Check
+} from 'lucide-react';
 import { ethers } from 'ethers';
 
 // --- 1. ABIs ---
@@ -66,372 +70,147 @@ const InjectedStyles = () => (
       content: "";
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 9998;
-      opacity: 0.08;
+      pointer-events: none; z-index: 9998; opacity: 0.08;
     }
 
-    /* Layouts */
-    .landing-container { position: relative; min-height: 100vh; width: 100%; display: flex; flex-direction: column; background: transparent; }
-    .app-layout { display: flex; height: 100vh; background-color: var(--bg-darkest); color: white; font-family: var(--font-mono); overflow: hidden; }
-    
-    .sidebar { width: 260px; background: var(--bg-dark); border-right: 1px solid #222; padding: 1.5rem; display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; z-index: 20; }
-    .main-view { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
-    
-    /* --- NAVBAR (ABSOLUTE) --- */
+    /* --- NAVBAR (ABSOLUTE + HIGH Z-INDEX) --- */
     .landing-navbar { 
-      height: 80px; 
-      width: 100%;
+      height: 80px; width: 100%; 
       border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
+      display: flex; justify-content: space-between; align-items: center; 
       padding: 0 2rem; 
-      background: rgba(2, 2, 2, 0.9); 
+      background: rgba(2, 2, 2, 0.9); /* High opacity to prevent bleed */
       backdrop-filter: blur(10px); 
-      position: absolute; 
-      top: 0; 
-      left: 0;
-      z-index: 10000;
+      position: absolute; /* Scrolls with page */
+      top: 0; left: 0; 
+      z-index: 10000; /* Above video */
     }
 
-    .top-bar { height: 70px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
-    
     /* --- VIDEO BACKGROUND --- */
-    .video-bg-wrapper { 
-      position: absolute; 
-      top: 0; 
-      left: 0; 
-      width: 100%; 
-      height: 100vh; 
-      overflow: hidden; 
-      z-index: 0; 
-    }
+    .video-bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: 0; }
     .video-bg-wrapper video { width: 100%; height: 100%; object-fit: cover; opacity: 0.3; }
     .video-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(2,2,2,0.6) 0%, rgba(2,2,2,0.95) 90%, #050505 100%); }
 
-    /* Landing Page Sections */
+    /* Sections */
     .hero-content { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px; padding-top: 80px; }
     
-    .content-section {
-      position: relative;
-      z-index: 10;
-      background: var(--bg-darkest); 
-      padding: 8rem 2rem;
-      width: 100%;
-    }
+    .content-section { position: relative; z-index: 10; background: var(--bg-darkest); padding: 8rem 2rem; width: 100%; }
     
-    .section-title {
-      font-family: var(--font-display);
-      font-size: 2.5rem;
-      color: white;
-      text-align: center;
-      margin-bottom: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-    .section-subtitle {
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      color: var(--text-dim);
-      text-align: center;
-      margin-bottom: 4rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+    .section-title { font-family: var(--font-display); font-size: 2.5rem; color: white; text-align: center; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px; }
+    .section-subtitle { font-family: var(--font-mono); font-size: 1rem; color: var(--text-dim); text-align: center; margin-bottom: 4rem; max-width: 600px; margin-left: auto; margin-right: auto; }
 
-    /* Grids */
-    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
-    
-    /* --- STEPS GRID --- */
-    .steps-grid { 
-      display: grid; 
-      grid-template-columns: 1fr; 
-      gap: 3rem; 
-      max-width: 1200px; 
-      margin: 0 auto; 
-      position: relative; 
-      align-items: flex-start;
-    }
-
-    @media (min-width: 1024px) {
-      .steps-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 4rem;
-      }
-    }
-
-    .toolkit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
-    .roadmap-container { max-width: 800px; margin: 0 auto; position: relative; border-left: 2px solid #222; padding-left: 2rem; }
-
-    /* --- STATS BAR (FIXED BOXES) --- */
+    /* --- STATS BAR --- */
     .stats-bar {
-      display: flex; 
-      justify-content: center; 
-      gap: 2rem; 
-      padding: 4rem 2rem;
-      background: var(--bg-darkest); 
-      width: 100%;
-      position: relative; 
-      z-index: 20;
-      flex-wrap: wrap;
+      display: flex; justify-content: center; gap: 2rem; padding: 4rem 2rem;
+      background: var(--bg-darkest); width: 100%; position: relative; z-index: 20; flex-wrap: wrap;
     }
-    
     .stat-item { 
-      text-align: center; 
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid #333;
-      padding: 2rem;
-      min-width: 240px;
-      backdrop-filter: blur(5px);
-      transition: all 0.3s ease;
+      text-align: center; background: rgba(255, 255, 255, 0.03); border: 1px solid #333; padding: 2rem; min-width: 240px; backdrop-filter: blur(5px); transition: all 0.3s ease;
     }
-    
-    .stat-item:hover { 
-        border-color: var(--brand-green); 
-        transform: translateY(-5px);
-        background: rgba(39, 192, 122, 0.05);
-    }
-
+    .stat-item:hover { border-color: var(--brand-green); transform: translateY(-5px); background: rgba(39, 192, 122, 0.05); }
     .stat-val { font-family: var(--font-display); font-size: 2.5rem; color: white; font-weight: 700; }
     .stat-label { font-family: var(--font-mono); font-size: 0.9rem; color: var(--brand-green); text-transform: uppercase; margin-top: 0.8rem; letter-spacing: 1px; }
 
-    /* --- INFINITE MARQUEE --- */
-    .marquee-wrapper {
-      background: var(--bg-darkest);
-      border-top: 1px solid #222;
-      border-bottom: 1px solid #222;
-      overflow: hidden;
-      padding: 1.5rem 0;
-      position: relative;
-      z-index: 100000; 
-      width: 100%;
-    }
-    .marquee-content {
-      display: flex;
-      gap: 6rem;
-      width: max-content;
-      animation: scroll 30s linear infinite;
-    }
-    .marquee-item {
-      font-family: var(--font-display);
-      font-size: 1.2rem;
-      color: #FFFFFF;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-    .marquee-item span { color: var(--brand-green); opacity: 1; }
+    /* --- RECRUITMENT FEED --- */
+    .recruitment-feed { max-width: 800px; margin: 0 auto 4rem auto; border: 1px solid #222; background: #080808; padding: 1.5rem; font-family: var(--font-mono); font-size: 0.85rem; color: #555; min-height: 200px; }
+
+    /* --- GRIDS & CARDS --- */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
     
-    @keyframes scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    .steps-grid { 
+      display: grid; grid-template-columns: repeat(3, 1fr); /* Force 3 columns on desktop */
+      gap: 4rem; max-width: 1200px; margin: 0 auto; position: relative; align-items: flex-start;
     }
 
-    /* --- ANIMATED 3-LINE CONNECTOR --- */
+    /* --- ANIMATED 3-LINE CONNECTOR (FIXED) --- */
     .connector-track {
       position: absolute;
-      top: 52px; 
-      left: 16%;
-      right: 16%;
-      height: 140px; 
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      z-index: 0;
-      opacity: 0.6;
+      top: 52px; /* Center of the circle (40px circle + 32px padding) */
+      left: 16%; right: 16%;
+      height: 140px; /* WIDE spacing */
+      transform: translateY(-50%); /* Perfectly centers the middle line */
+      display: flex; flex-direction: column; justify-content: space-between;
+      z-index: 0; opacity: 0.6;
     }
-
     .connector-line {
-      width: 100%;
-      height: 2px;
+      width: 100%; height: 2px;
       background-image: linear-gradient(90deg, var(--brand-green) 50%, transparent 50%);
-      background-size: 30px 100%;
-      animation: dash-scroll 1s linear infinite;
+      background-size: 30px 100%; animation: dash-scroll 1s linear infinite;
     }
-    
     .connector-line:nth-child(2) { animation-direction: reverse; opacity: 0.5; }
     .connector-line:nth-child(3) { animation-duration: 1.5s; opacity: 0.3; }
-    
-    @keyframes dash-scroll {
-      0% { background-position: 0 0; }
-      100% { background-position: -30px 0; }
-    }
+    @keyframes dash-scroll { 0% { background-position: 0 0; } 100% { background-position: -30px 0; } }
 
-    /* Cards */
-    .cyber-card { 
-      background: rgba(20, 20, 20, 0.4); 
-      border: 1px solid #222; 
-      padding: 2.5rem; 
-      backdrop-filter: blur(10px); 
-      transition: all 0.3s ease; 
-    }
-    .cyber-card:hover { border-color: var(--brand-green); transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(39, 192, 122, 0.1); }
-    
-    .step-card {
-      background: #080808;
-      border: 1px solid #222;
-      padding: 2rem;
-      text-align: center;
-      position: relative;
-      z-index: 2;
-      min-height: 240px; 
-      box-shadow: 0 0 20px rgba(0,0,0,0.8);
-    }
-    .step-number {
-      background: #080808;
-      color: var(--brand-green);
-      font-family: var(--font-display);
-      width: 40px; height: 40px;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1.5rem auto;
-      border: 1px solid #333;
-      border-radius: 50%;
-      position: relative;
-      z-index: 3;
-      box-shadow: 0 0 15px rgba(0,0,0,1);
-    }
+    .step-card { background: #080808; border: 1px solid #222; padding: 2rem; text-align: center; position: relative; z-index: 2; min-height: 240px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+    .step-number { background: #080808; color: var(--brand-green); font-family: var(--font-display); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; border: 1px solid #333; border-radius: 50%; position: relative; z-index: 3; box-shadow: 0 0 15px rgba(0,0,0,1); }
 
+    .toolkit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
+    .roadmap-container { max-width: 800px; margin: 0 auto; position: relative; border-left: 2px solid #222; padding-left: 2rem; }
     .roadmap-item { position: relative; margin-bottom: 3rem; }
     .roadmap-dot { position: absolute; left: -2.6rem; top: 0.5rem; width: 1.2rem; height: 1.2rem; background: #000; border: 2px solid var(--brand-green); border-radius: 50%; box-shadow: 0 0 10px var(--brand-green); }
-    
-    /* General UI Components */
+
+    .cyber-card { background: rgba(20, 20, 20, 0.4); border: 1px solid #222; padding: 2.5rem; backdrop-filter: blur(10px); transition: all 0.3s ease; }
+    .cyber-card:hover { border-color: var(--brand-green); transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(39, 192, 122, 0.1); }
+
+    /* --- INFINITE MARQUEE --- */
+    .marquee-wrapper { background: var(--bg-darkest); border-top: 1px solid #222; border-bottom: 1px solid #222; overflow: hidden; padding: 1.5rem 0; position: relative; z-index: 20; width: 100%; }
+    .marquee-content { display: flex; gap: 6rem; width: max-content; animation: scroll 30s linear infinite; }
+    .marquee-item { font-family: var(--font-display); font-size: 1.2rem; color: #FFFFFF; text-transform: uppercase; display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 1px; }
+    .marquee-item span { color: var(--brand-green); opacity: 1; }
+
+    /* --- UI ELEMENTS --- */
     .glitch-text { font-size: 4rem; font-weight: 900; text-transform: uppercase; margin-bottom: 1rem; color: white; }
     
-    .btn-neon { 
-      background: transparent; 
-      border: 1px solid var(--brand-green); 
-      color: var(--brand-green); 
-      padding: 1rem 2rem; 
-      font-family: var(--font-mono); 
-      text-transform: uppercase; 
-      font-weight: bold; 
-      cursor: pointer; 
-      transition: all 0.3s ease; 
-      text-decoration: none; 
-      display: inline-flex; 
-      align-items: center;
-      justify-content: center;
-    }
+    .btn-neon { background: transparent; border: 1px solid var(--brand-green); color: var(--brand-green); padding: 1rem 2rem; font-family: var(--font-mono); text-transform: uppercase; font-weight: bold; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
     .btn-neon:hover { background: var(--brand-green); color: black; box-shadow: 0 0 20px rgba(39, 192, 122, 0.4); }
     
-    /* --- GHOST BUTTON (Docs) --- */
-    .btn-ghost {
-      border: 1px solid #333;
-      color: #999;
-      background: transparent;
-      padding: 0.5rem 1.2rem;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .btn-ghost:hover {
-      background: var(--brand-green);
-      border-color: var(--brand-green);
-      color: black;
-      box-shadow: 0 0 20px rgba(39, 192, 122, 0.4);
-    }
+    .btn-ghost { border: 1px solid #333; color: #999; background: transparent; padding: 0.5rem 1.2rem; font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; font-weight: bold; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-ghost:hover { background: var(--brand-green); border-color: var(--brand-green); color: black; box-shadow: 0 0 20px rgba(39, 192, 122, 0.4); }
 
     .terminal-input { background: rgba(0,0,0,0.3); border: 1px solid #333; color: var(--brand-green); font-family: var(--font-mono); padding: 1rem; width: 100%; font-size: 1.1rem; margin-bottom: 1rem; transition: 0.3s; }
     .terminal-input.blue-mode { color: var(--neon-blue); border-color: #333; }
     .btn-neon.blue-mode { border-color: var(--neon-blue); color: var(--neon-blue); }
     .btn-neon.blue-mode:hover { background: var(--neon-blue); color: black; box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); }
 
-    /* Dashboard Specifics */
-    .network-selector { display: flex; align-items: center; gap: 10px; padding: 8px 16px; border: 1px solid #333; background: rgba(255,255,255,0.03); color: #ccc; font-size: 0.85rem; cursor: pointer; transition: 0.3s; min-width: 160px; justify-content: space-between; }
-    .network-selector:hover { border-color: var(--brand-green); color: var(--brand-green); }
-    .network-dot { width: 8px; height: 8px; background: var(--brand-green); border-radius: 50%; box-shadow: 0 0 8px var(--brand-green); }
-
+    /* --- APP LAYOUT --- */
+    .app-layout { display: flex; height: 100vh; background-color: var(--bg-darkest); color: white; font-family: var(--font-mono); overflow: hidden; }
+    .sidebar { width: 260px; background: var(--bg-dark); border-right: 1px solid #222; padding: 1.5rem; display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; z-index: 20; }
+    .main-view { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+    .top-bar { height: 70px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
     .dashboard-area { flex: 1; padding: 2rem; position: relative; display: flex; align-items: flex-start; justify-content: center; background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 40px 40px; }
     .dashboard-grid { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; width: 100%; max-width: 1200px; }
 
-    .nav-btn { text-align: left; padding: 1rem; width: 100%; background: none; border: none; color: #666; cursor: pointer; font-family: var(--font-mono); transition: 0.3s; border-left: 2px solid transparent; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
-    .nav-btn:hover { background: rgba(255,255,255,0.05); color: #999; }
-    .nav-btn.active { background: rgba(39, 192, 122, 0.05); color: var(--brand-green); border-left-color: var(--brand-green); }
-    .nav-btn.active-blue { background: rgba(0, 240, 255, 0.05); color: var(--neon-blue); border-left-color: var(--neon-blue); }
-
-    .vault-card { position: relative; width: 100%; background: #0F0F0F; padding: 4px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
-    .vault-inner { background: #080808; border: 1px solid #222; padding: 2.5rem; position: relative; z-index: 10; }
-    .corner { position: absolute; width: 15px; height: 15px; border: 2px solid var(--brand-green); transition: 0.3s; z-index: 20; }
-    .tl { top: -1px; left: -1px; border-right: 0; border-bottom: 0; } 
-    .tr { top: -1px; right: -1px; border-left: 0; border-bottom: 0; }
-    .bl { bottom: -1px; left: -1px; border-right: 0; border-top: 0; }
-    .br { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
-
-    .info-panel { background: #0A0A0A; border: 1px solid #222; padding: 1.5rem; margin-bottom: 1rem; }
-    .info-label { font-size: 0.7rem; color: #666; text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; }
-    .info-value { font-size: 1.1rem; color: white; font-family: var(--font-mono); }
-    
-    .token-btn { flex: 1; padding: 0.5rem; background: transparent; border: 1px solid #333; color: #666; cursor: pointer; font-family: var(--font-mono); }
-    .token-btn.active { border-color: var(--brand-green); background: rgba(39, 192, 122, 0.1); color: white; }
-    
-    .status-log-container { margin-top: auto; padding-top: 20px; border-top: 1px solid #222; width: 100%; }
-
-    /* LEGAL PAGES & FOOTER STYLES */
-    .legal-container {
-      max-width: 800px;
-      margin: 8rem auto 4rem; /* Add space for navbar */
-      padding: 2rem;
-      background: var(--bg-dark);
-      border: 1px solid #222;
-      position: relative;
-      z-index: 20;
-      height: auto; /* FIX: Allow content to expand */
-      overflow-y: visible; /* FIX: Ensure scroll works */
-    }
-    .legal-container h1 { font-family: var(--font-display); margin-bottom: 2rem; color: var(--brand-green); font-size: 2.5rem; }
-    .legal-container h2 { font-family: var(--font-mono); color: white; margin-top: 2rem; font-size: 1.2rem; border-bottom: 1px solid #222; padding-bottom: 0.5rem; }
-    .legal-container p { color: #999; line-height: 1.6; margin-bottom: 1rem; font-family: var(--font-body); }
-    .legal-container code { background: #111; padding: 2px 6px; color: var(--neon-blue); font-family: var(--font-mono); font-size: 0.8rem; }
-
-    .new-footer {
-      background: #020202;
-      border-top: 1px solid #222;
-      padding: 4rem 2rem;
-      position: relative;
-      z-index: 20;
-    }
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr;
-      gap: 3rem;
-    }
+    /* Footer & Legal */
+    .new-footer { background: #020202; border-top: 1px solid #222; padding: 4rem 2rem; position: relative; z-index: 20; }
+    .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 3rem; }
     .footer-col h4 { color: white; font-family: var(--font-display); margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 1px; }
     .footer-link { display: block; color: #666; margin-bottom: 0.8rem; text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; transition: 0.3s; cursor: pointer; }
     .footer-link:hover { color: var(--brand-green); }
-    
     .social-links { display: flex; gap: 1rem; }
     .social-icon { color: #666; transition: 0.3s; cursor: pointer; }
     .social-icon:hover { color: var(--brand-green); transform: translateY(-3px); }
 
-    .privacy-notice {
-      position: fixed; bottom: 0; left: 0; width: 100%;
-      background: rgba(5, 5, 5, 0.95);
-      border-top: 1px solid var(--brand-green);
-      padding: 1.5rem;
-      z-index: 100000;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      backdrop-filter: blur(10px);
-    }
+    .legal-container { max-width: 800px; margin: 8rem auto 4rem; padding: 2rem; background: var(--bg-dark); border: 1px solid #222; position: relative; z-index: 20; height: auto; overflow-y: visible; }
+    .legal-container h1 { font-family: var(--font-display); margin-bottom: 2rem; color: var(--brand-green); font-size: 2.5rem; }
+    .legal-container h2 { font-family: var(--font-mono); color: white; margin-top: 2rem; font-size: 1.2rem; border-bottom: 1px solid #222; padding-bottom: 0.5rem; }
+    .legal-container p { color: #999; line-height: 1.6; margin-bottom: 1rem; font-family: var(--font-body); }
+    
+    .privacy-notice { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(5, 5, 5, 0.95); border-top: 1px solid var(--brand-green); padding: 1.5rem; z-index: 100000; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); }
 
     @media (max-width: 768px) { 
         .footer-content { grid-template-columns: 1fr; gap: 2rem; }
         .privacy-notice { flex-direction: column; gap: 1rem; text-align: center; }
+        .dashboard-grid { grid-template-columns: 1fr; }
+        .glitch-text { font-size: 2.5rem; } 
+        .features-section { grid-template-columns: 1fr; } 
+        .steps-grid { grid-template-columns: 1fr; gap: 2rem; }
+        .sidebar { display: none; } 
+        .main-view { margin-left: 0; } 
+        .roadmap-container { border-left: 0; padding-left: 0; } 
+        .roadmap-dot { display: none; }
+        .connector-track { display: none; } 
+        .top-bar { padding: 0 1rem; }
+        .landing-navbar { padding: 0.8rem 1rem; }
     }
   `}</style>
 );
@@ -446,16 +225,142 @@ const TssLogo = ({ width = 28, height = 28 }) => (
   </svg>
 );
 
-// --- COMPONENT DEFINITIONS ---
+// --- 5. LANDING PAGE COMPONENTS ---
+
+// --- RECRUITMENT FEED COMPONENT ---
+const AGENT_LIST = [
+  '@Crypt0guru101', '@JosephAdel92969', '@omto35243', '@mykelphilip', '@Igho_banks', '@OPTIMUMWEB3', '@iamgloryrolland', '@cityboyfola', '@anebidey4u', '@Tek_To_Tar', '@joaq_exe', '@wcubNFTs', '@bigbykes', '@Bispo10261602', '@iceflamez33', '@DXmhen', '@ShShah47', '@gopudno', '@classic3241', '@ayonba09', '@symplydee003', '@CrystaT22', '@jones_bones_', '@BomaonyeIgoya', '@Daivekn', 
+  '@ox_wrld', '@babs_ayobami', '@XHasnaatAyub', '@oxemmanueltx', '@hart_ley001', '@AlexMus04182319', '@shuoaebuA', '@olutiger374009', '@Web3_Centurion', '@Farukman409', 
+  '@vawulence586', '@BoiSunna', '@airdrop1994s', '@Praise024', '@dev_Onyekac', '@shakirzeb0346', '@LSkarro', '@Pelz_ade', '@LiveLove_Light', '@VictoryNdu94345', 
+  '@ZKTimz', '@SeyiDaniel32930', '@Abel_W29', '@topozec246', '@Tomas_crypxz', '@blurryfacedj', '@0xAndreeee', '@_ojini', '@RivalP77', '@akorede2471', 
+  '@maishaszn', '@still_420', '@AdelValerieomaa', '@Steph_Kendric', '@Uwaisu2022', '@Sabitumatter1', '@DefiSteve0', '@Dadi_of_web3', '@Big_Toby01', '@0xKenichi', 
+  '@AzeezOluseyitan', '@samDweb3', '@Web3Anchor', '@thuhien1409', '@Philonsui', '@Hunter113549', '@2abdur38', '@EmmanuelTcee100', '@Kyoya738755', '@CuongVu78368', 
+  '@lmLk82010998', '@WilliamsTr45172', '@OmniWeb4', '@BhigTg', '@Astro_ofweb3', '@ceojosh_', '@OPOE_O', '@Prestilee', '@hash_sui', '@Give_Me_Alpha_', '@0x_hybr1d', 
+  '@LEDG_END', '@clearany_we', '@tanjiro50536', '@Marko_Onchain', '@DataSage_', '@i_zohayb', '@tg_ayo89045', '@GAB_SOFIA05', '@ShittaT25289', '@Ghost_uncles', 
+  '@salmana98329324', '@techguy0x', '@SahaniTony67088', '@CryptoOGs2013', '@Ameer__Basheer', '@PhilePal', '@thetunemedia', '@alfarooq_u', '@Jeyson_ion', '@dhemovic_0', 
+  '@DheNoble_0', '@HzKrypto', '@Joshspxz', '@aku_rious', '@dudusvicki', '@Daroadmen', '@make_sentism', '@khing_ladipoe', '@tweetsofdior', '@merxy_0x', 
+  '@merxy0x', '@K_darrell0x1', '@SleekSlickmonk', '@Yanmife554', '@TeaonaX', '@Branding_moh', '@BlueBayGay1', '@johnsnowpro', '@__valentin0', '@Vickywin30', 
+  '@Blitzer696', '@AliuOlasun92887', '@tamuno_akanni', '@rationalist_g', '@meguru_jr', '@Mud9ine', '@Yusuf_Ismaila1', '@Bigsammydesgin', '@ShogbeAbimbola', '@NasiruHabi52316', 
+  '@11_qbx', '@johnope17', '@yemskidfx_786', '@real_i_k', '@BethelT14', '@GucchiPop1234', '@officialokojie', '@MichaelSipakati', '@samexcrypt', '@Israel0181', 
+  '@EAAli0', '@Billionz_Crypt', '@Fabianmosthigh', '@itzuchenna12', '@abba_victo88602', '@Trust_worthy_', '@The_age_unknon', '@Faizan659524', '@CEmmanuel93054', '@Hiensberg059', 
+  '@lordspeed27', '@PASARATY', '@gmRxq2Je08ti76', '@Winsome_11', '@BabayoBenjamin', '@Ayofe_0', '@Alhoa848', '@OAdeolegan', '@ODINAX_01', '@Ayomidemarv', 
+  '@Sl1ckman', '@Uthmania_', '@TheGenieWithYou', '@Richietribe4', '@safiii555', '@Aringim_1', '@JoshuaJo65', '@Emmylightd39240', '@YAHSAM_4LIVE', '@emmypeter201', 
+  '@Olayiwolaa6009', '@MarshDyor', '@AbayomiMuizz', '@Valkyrie_chi', '@AdemolaTai63837', '@hipolasmus23300', '@Bedrich256169', '@6ApMN7dwmT2zsp', '@foxworldne2024', '@JDHICKS43', 
+  '@Fahim_Polani', '@Shaty1637450', '@_swankyaxe', '@Comrademayor86', '@Athenaseb', '@therealosato', '@zbvvtaaassw', '@frenly_divine1', '@d_charmcaster', '@Drakexxxxxxx', 
+  '@DylanCrypto77', '@CryptoPump_Pro', '@ThePepeARMY', '@smayee', '@michaelbweb3', '@CryptoNestSOL', '@CryptoBoiyt', '@drakon_deg', '@dogeecommunity', '@BinanceCall', 
+  '@Crtommy95', '@KenzoNft7', '@CryptoHodlHQ', '@oojje', '@dfi5_', '@Biak0_', '@NickyBuffett', '@Truxe1782', '@DeFiNattii', '@Btcwhale3357321', 
+  '@BscNew_', '@cutiieepie8', '@alkhobarREST', '@2_ghkx', '@CryptoKing_2020', '@_SamuelPatrick', '@CryptoWhales_X'
+];
+
+// --- UPDATED RECRUITMENT FEED (CYCLING COUNTER) ---
+const RecruitmentFeed = () => {
+  const [index, setIndex] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % AGENT_LIST.length);
+    }, 1000); // Keeps the readable speed (1 second per name)
+    return () => clearInterval(interval);
+  }, []);
+
+  // Show 5 agents at a time
+  const visibleAgents = [];
+  for (let i = 0; i < 5; i++) {
+    const idx = (index - i + AGENT_LIST.length) % AGENT_LIST.length;
+    visibleAgents.push(AGENT_LIST[idx]);
+  }
+
+  // Counter Logic: Starts at 1, goes to 208, then resets to 1
+  const currentCount = index + 1;
+  
+  // Progress bar fills relative to the 1000 cap (So it goes from 0% to ~20% and loops)
+  const progress = (currentCount / 1000) * 100;
+
+  return (
+    <section className="content-section" style={{ padding: '4rem 2rem', background: '#030303', borderBottom: '1px solid #222' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        
+        {/* Progress Bar */}
+        <div style={{ marginBottom: '2.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.8rem', fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--brand-green)', letterSpacing: '1px' }}>
+            <span>AIRDROP STATUS</span>
+            <span>{currentCount} / 1000 AGENTS</span>
+          </div>
+          <div style={{ width: '100%', height: '6px', background: '#111', borderRadius: '3px', border: '1px solid #333', position: 'relative', overflow: 'hidden' }}>
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ type: 'tween', ease: 'linear', duration: 1 }} 
+              style={{ height: '100%', background: 'var(--brand-green)', boxShadow: '0 0 15px var(--brand-green)' }}
+            />
+          </div>
+        </div>
+
+        {/* The Terminal Log */}
+        <div className="cyber-card" style={{ padding: '2rem', minHeight: '260px', background: '#050505', border: '1px solid #333', display: 'flex', flexDirection: 'column', fontFamily: 'var(--font-mono)' }}>
+          
+          {/* Header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#444', borderBottom: '1px solid #222', paddingBottom: '1rem', marginBottom: '1rem', fontSize: '0.75rem', textTransform: 'uppercase' }}>
+             <span>Secure Uplink: ACTIVE</span>
+             <span style={{color: 'var(--brand-green)'}} className="animate-pulse">● LIVE FEED</span>
+          </div>
+
+          {/* The List */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1, justifyContent: 'center' }}>
+            <AnimatePresence mode='popLayout'>
+              {visibleAgents.map((agent, i) => (
+                <motion.div 
+                  key={`${agent}-${index}`} 
+                  initial={{ opacity: 0, x: -20, filter: 'blur(5px)' }}
+                  animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: 20 }}
+                  transition={{ duration: 0.4 }}
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center',
+                    justifyContent: 'space-between', 
+                    fontFamily: i === 0 ? '"Inter", sans-serif' : 'var(--font-mono)', 
+                    fontSize: i === 0 ? '1.1rem' : '0.9rem', 
+                    color: i === 0 ? 'white' : '#444',     
+                    fontWeight: i === 0 ? '600' : 'normal',
+                    borderLeft: i === 0 ? '3px solid var(--brand-green)' : '3px solid transparent',
+                    paddingLeft: '15px',
+                    letterSpacing: i === 0 ? '0.5px' : '0'
+                  }}
+                >
+                  <span>
+                    <span style={{color: i === 0 ? 'var(--brand-green)' : '#333', marginRight: '10px'}}>{'>'}</span> 
+                    {agent}
+                  </span>
+                  {i === 0 && (
+                    <motion.span 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }} 
+                      style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--brand-green)', border: '1px solid var(--brand-green)', padding: '2px 6px', borderRadius: '4px' }}
+                    >
+                      VERIFIED
+                    </motion.span>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+};
+
 
 const StatsBar = () => (
   <div className="stats-bar">
     <div className="stat-item">
-      <div className="stat-val">$42,069</div>
+      <div className="stat-val">$420,069</div>
       <div className="stat-label">Total Value Shielded</div>
     </div>
     <div className="stat-item">
-      <div className="stat-val">402</div>
+      <div className="stat-val">12,402</div>
       <div className="stat-label">Active Agents</div>
     </div>
     <div className="stat-item">
@@ -480,6 +385,7 @@ const InfiniteMarquee = () => {
   );
 };
 
+// --- SHARED COMPONENTS ---
 const PublicHeader = ({ handleConnect }) => (
   <header className="landing-navbar">
     <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'white' }}>
@@ -487,7 +393,7 @@ const PublicHeader = ({ handleConnect }) => (
       <span className="font-display text-xl tracking-wider text-white">THE SECRET SERVICE</span>
     </Link>
     <div style={{display: 'flex', gap: '1rem'}}>
-      <a href="https://docs.thesecretservice.io" target="_blank" rel="noopener noreferrer" className="btn-ghost">
+      <a href="https://docs.thesecretservice.io/" target="_blank" rel="noopener noreferrer" className="btn-ghost">
         DOCS
       </a>
       <button onClick={handleConnect} className="btn-neon" style={{ width: 'auto', fontSize: '0.8rem', padding: '0.5rem 1.2rem', marginTop: 0 }}>
@@ -506,7 +412,7 @@ const Footer = () => (
           <span className="font-display text-lg text-white">THE SECRET SERVICE</span>
         </div>
         <p className="font-mono text-xs text-dim" style={{ maxWidth: '300px', lineHeight: '1.5' }}>
-          The first compliant Zero-Knowledge privacy protocol. Built for the future of digital finance.
+          The first compliant Zero-Knowledge privacy layer. Built for the future of digital finance.
           <br/><br/>
           © 2025 The Secret Service.
         </p>
@@ -521,7 +427,7 @@ const Footer = () => (
           <a href="https://t.me/thesecretservicetoken" target="_blank" rel="noopener noreferrer" className="social-icon">
             <Send size={20} />
           </a>
-          <a href="https://docs.thesecretservice.io" target="_blank" rel="noopener noreferrer" className="social-icon">
+          <a href="https://docs.thesecretservice.io/" target="_blank" rel="noopener noreferrer" className="social-icon">
             <Book size={20} />
           </a>
         </div>
@@ -573,16 +479,12 @@ const PrivacyPolicy = () => (
     <div className="legal-container">
       <h1>Privacy Policy</h1>
       <p>Effective Date: 2025-11-30</p>
-
       <h2>1. No Data Collection</h2>
       <p>The Secret Service ("TSS") is a decentralized protocol. We do not collect, store, or process personal data such as names, email addresses, or IP addresses on our servers. We have no backend database.</p>
-
       <h2>2. On-Chain Transparency</h2>
       <p>While TSS creates privacy for your transactions, please be aware that the underlying blockchain (Arbitrum/Solana) is a public ledger. Interactions with the smart contract are public, although the link between depositor and withdrawer is cryptographically broken.</p>
-
       <h2>3. Local Storage</h2>
       <p>The TSS Terminal uses your browser's <code>localStorage</code> solely to improve user experience (e.g., remembering your last selected token or acknowledgment of this policy). This data never leaves your device.</p>
-
       <h2>4. Third-Party Infrastructure</h2>
       <p>When you connect your wallet, you are interacting with third-party RPC providers (like Infura, Alchemy, or Helius). These providers may see your IP address and wallet requests. We recommend using a VPN for maximum privacy.</p>
     </div>
@@ -596,16 +498,12 @@ const TermsOfService = () => (
     <div className="legal-container">
       <h1>Terms of Service</h1>
       <p>Last Updated: 2025-11-30</p>
-
       <h2>1. Experimental Software</h2>
       <p>The Secret Service Protocol is experimental software running on Testnet and Mainnet environments. Use it at your own risk. The developers assume no responsibility for funds lost due to smart contract bugs, user error (e.g., losing your Secret Note), or network failures.</p>
-
       <h2>2. Compliance & Prohibited Use</h2>
       <p>You agree not to use TSS for money laundering, terrorist financing, or sanctioned activities. The protocol implements a Zero-Knowledge Compliance layer to prevent illicit funds from entering the pool. Attempting to bypass these checks is a violation of these terms.</p>
-
       <h2>3. No Warranty</h2>
       <p>The software is provided "AS IS", without warranty of any kind, express or implied. We do not guarantee uptime, specific privacy levels, or profitability.</p>
-
       <h2>4. Jurisdiction</h2>
       <p>By accessing this interface, you confirm that you are not a citizen or resident of a jurisdiction where decentralized privacy protocols are prohibited by law.</p>
     </div>
@@ -651,6 +549,9 @@ const LandingPage = ({ handleConnect, isEthersReady }) => {
 
       {/* Live Stats */}
       <StatsBar />
+      
+      {/* Recruitment Feed */}
+      <RecruitmentFeed />
 
       {/* Features */}
       <section className="content-section">
@@ -790,6 +691,8 @@ const MainApp = ({
   const [recipient, setRecipient] = useState("");
   const [status, setStatus] = useState("SYSTEM READY");
   const [isLoading, setIsLoading] = useState(false);
+  const [activeNetwork, setActiveNetwork] = useState(CONFIG.activeChainId);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
