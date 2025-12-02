@@ -122,15 +122,19 @@ const InjectedStyles = () => (
       gap: 4rem; max-width: 1200px; margin: 0 auto; position: relative; align-items: flex-start;
     }
 
-    /* --- ANIMATED 3-LINE CONNECTOR (FIXED) --- */
+    /* --- ANIMATED 3-LINE CONNECTOR (FIXED & CENTERED) --- */
     .connector-track {
       position: absolute;
-      top: 52px; /* Center of the circle (40px circle + 32px padding) */
-      left: 16%; right: 16%;
-      height: 140px; /* WIDE spacing */
-      transform: translateY(-50%); /* Perfectly centers the middle line */
-      display: flex; flex-direction: column; justify-content: space-between;
-      z-index: 0; opacity: 0.6;
+      top: 120px;  /* Target the center of the number circle */
+      left: 16%;
+      right: 16%;
+      height: 150px; /* Height controls the spacing between lines */
+      transform: translateY(-50%); /* KEY FIX: This centers the group perfectly */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 0;
+      opacity: 0.5;
     }
     .connector-line {
       width: 100%; height: 2px;
@@ -356,11 +360,11 @@ const RecruitmentFeed = () => {
 const StatsBar = () => (
   <div className="stats-bar">
     <div className="stat-item">
-      <div className="stat-val">$420,069</div>
+      <div className="stat-val">$42,069</div>
       <div className="stat-label">Total Value Shielded</div>
     </div>
     <div className="stat-item">
-      <div className="stat-val">12,402</div>
+      <div className="stat-val">402</div>
       <div className="stat-label">Active Agents</div>
     </div>
     <div className="stat-item">
